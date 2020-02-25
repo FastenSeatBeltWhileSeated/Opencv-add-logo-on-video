@@ -53,60 +53,63 @@ while True:
 	if W is None or H is None:
 		(H, W) = frame.shape[:2]    
     
-  # Load the Logo image with Alpha channel
-  LogoPNG = cv2.imread("Logo.png",-1)
+	# Load the Logo image with Alpha channel
+	LogoPNG = cv2.imread("Logo.png",-1)
   
-  # Resize the image to fit over the region of interes
-  LogoPNG = cv2.resize(LogoPNG, (300,100))
-
-  # Separate the Color and alpha channels
-  LogoBGR = LogoPNG[:,:,0:3]
-  LogoMask1 = LogosPNG[:,:,3]
-
-  # Make the dimensions of the mask same as the input image.
-  # Since Video Image is a 3-channel image, we create a 3 channel image for the mask
-  LogoMask = cv2.merge((LogoMask1,LogoMask1,LogoMask1))
-
-  # Make the values [0,1] since we are using arithmetic operations
-  LogoMask = np.uint8(LogoMask/255)
-
-  # Make a copy
-  FrameWithLogoArithmetic = frame.copy()
-
-  # Get the space region for logo in the video-frame
-  spaceROI= FrameWithLogoArithmetic[20:120,20:320]
-
-  # Use the mask to create the masked space region
-  maskedSpace = cv2.multiply(spaceROI,(1-  LogoMask ))
-
-  # Use the mask to create the masked Logo region
-  maskedLogo = cv2.multiply(LogoBGR,LogoMask)
-
-  # Combine the LOgo in the Space Region to get the augmented image
-  spaceRoiFinal = cv2.add(maskedSpace, maskedLogo)
-
-  # Replace the space ROI with the output from the previous section
-  frameWithLogoArithmetic[20:120,20:320]=spaceRoiFinal
-  
-  #Return to the original variable
-  frame = faceWithGlassesArithmetic
-  
+	# Resize the image to fit over the region of interes
+	LogoPNG = cv2.resize(LogoPNG, (300,100))
+	
+	# Separate the Color and alpha channels
+	LogoBGR = LogoPNG[:,:,0:3]
+	LogoMask1 = LogosPNG[:,:,3]
+	
+	# Make the dimensions of the mask same as the input image.
+	# Since Video Image is a 3-channel image, we create a 3 channel image for the mask
+	LogoMask = cv2.merge((LogoMask1,LogoMask1,LogoMask1))
+	
+	# Make the values [0,1] since we are using arithmetic operations
+	LogoMask = np.uint8(LogoMask/255)
+	
+	# Make a copy
+	FrameWithLogoArithmetic = frame.copy()
+	
+	# Get the space region for logo in the video-frame
+	spaceROI= FrameWithLogoArithmetic[20:120,20:320]
+	
+	# Use the mask to create the masked space region
+	maskedSpace = cv2.multiply(spaceROI,(1-  LogoMask ))
+	
+	# Use the mask to create the masked Logo region
+	maskedLogo = cv2.multiply(LogoBGR,LogoMask)
+	
+	# Combine the LOgo in the Space Region to get the augmented image
+	spaceRoiFinal = cv2.add(maskedSpace, maskedLogo)
+	
+	# Replace the space ROI with the output from the previous section
+	frameWithLogoArithmetic[20:120,20:320]=spaceRoiFinal
+	
+	#Return to the original variable
+	frame = frameWithLogoArithmetic
+	
 	# check if the video writer is None
 	if writer is None:
 		# initialize our video writer
 		fourcc = cv2.VideoWriter_fourcc(*"MJPG")
 		writer = cv2.VideoWriter(args["output"], fourcc, 30,
-			(frame.shape[1], frame.shape[0]), True)
-
+					 (frame.shape[1], frame.shape[0]), True)
+		
 		# some information on processing single frame
 		if total > 0:
 			elap = (end - start)
 			print("[INFO] single frame took {:.4f} seconds".format(elap))
-			print("[INFO] estimated total time to finish: {:.4f}".format(
-				elap * total))
-
+			print("[INFO] estimated total time to finish: {:.4f}".format(elap * total))
+			
 	# write the output frame to disk
 	writer.write(frame)
+	
+	# Identify if 'ESC' is pressed or not
+	if(k==27):
+		break
 
 # release the file pointers
 print("[INFO] cleaning up...")
