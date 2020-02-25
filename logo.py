@@ -40,7 +40,8 @@ except:
 	total = -1
 
 # loop over frames from the video file stream
-while True:
+#while(cap.isOpened()):
+while True:	
 
 	# read the next frame from the file
 	(grabbed, frame) = vs.read()
@@ -108,7 +109,7 @@ while True:
 	writer.write(frame)
 	
 	# Identify if 'ESC' is pressed or not
-	if(k==27):
+	if(0xFF == 27):
 		break
 
 # release the file pointers
