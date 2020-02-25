@@ -20,6 +20,11 @@ vs = cv2.VideoCapture(args["input"])
 writer = None
 (W, H) = (None, None)
 
+# Check if camera opened successfully
+if (cap.isOpened()== False): 
+  print("Error opening video stream or file")
+
+
 # try to determine the total number of frames in the video file
 try:
 	prop = cv2.cv.CV_CAP_PROP_FRAME_COUNT if imutils.is_cv2() \
